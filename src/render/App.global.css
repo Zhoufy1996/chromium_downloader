@@ -1,0 +1,59 @@
+.circle {
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-name: turnaround;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+.drag-header {
+  -webkit-app-region: drag;
+}
+
+button {
+  -webkit-app-region: no-drag;
+}
+
+@keyframes turnaround {
+  from {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.downloading {
+  animation: downloading 2s infinite;
+  background-image: linear-gradient(to right, white, #66ccff);
+  background-repeat: no-repeat;
+}
+
+@keyframes downloading {
+  from {
+    background-size: 0%;
+  }
+  to {
+    background-size: 100%;
+  }
+}
