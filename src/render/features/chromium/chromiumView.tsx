@@ -3,7 +3,6 @@ import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 
-import store, { RevisionToVersionMap } from '../../../main/store';
 import LocalChromiumContainer from '../../stores/localChromium';
 
 import ToolsFixedBtn from './ToolsFixedBtn';

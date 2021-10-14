@@ -4,7 +4,7 @@ import store from './store';
 import { getFileSaveFolder } from './utils';
 
 const registerCommonEvent = () => {
-  ipcMain.handle('update-store-file', (event, obj) => {
+  ipcMain.handle('update-store-file', (_, obj) => {
     return store.set(obj);
   });
 
@@ -33,11 +33,11 @@ const registerCommonEvent = () => {
 };
 
 const registerChromiumEvent = () => {
-  ipcMain.on('start-chromium-spider', (event) => {
+  ipcMain.on('start-chromium-spider', () => {
     startSpider();
   });
 
-  ipcMain.handle('download-chrome', (event, revision) => {
+  ipcMain.handle('download-chrome', (_, revision) => {
     return ChromiumService.downloadChromium({ revision });
   });
 };

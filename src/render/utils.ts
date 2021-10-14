@@ -5,10 +5,10 @@ const isChromiumProcess = (
   pid: string,
   includesStr: string
 ): Promise<string | boolean> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     childProcess.exec(
       `wmic process get name, executablepath, processid|findstr ${pid}`,
-      (pErr, pStdout, pStderr) => {
+      (pErr, pStdout) => {
         if (pErr) {
           resolve(false);
           return;
@@ -48,7 +48,7 @@ export const killAllChromiumProcess = async (callback?: () => unknown) => {
     );
   };
 
-  childProcess.exec(`tasklist | findStr "chrome"`, (err, stdout, stderr) => {
+  childProcess.exec(`tasklist | findStr "chrome"`, (err, stdout) => {
     if (err) {
       console.log(err);
       return;

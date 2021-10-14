@@ -2,7 +2,7 @@ import formatDuration from 'format-duration';
 
 /* eslint-disable import/prefer-default-export */
 export const sleep = (timeount = 300) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(true);
     }, timeount);

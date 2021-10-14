@@ -49,7 +49,7 @@ const useLocalChromium = () => {
   }, []);
 
   useEffect(() => {
-    ipcRenderer.on('chromium-spider-res', (event, data: State['spiderRes']) => {
+    ipcRenderer.on('chromium-spider-res', (_, data: State['spiderRes']) => {
       setState((pre) => {
         return {
           ...pre,

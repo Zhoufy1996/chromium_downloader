@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import {
   makeStyles,
-  Theme,
   createStyles,
   IconButton,
   Tooltip,
@@ -28,7 +27,7 @@ import store from '../../../main/store';
 import { killAllChromiumProcess } from '../../utils';
 import { getSpiderResMessage } from '../../../common/chromium';
 
-const useStyles = makeStyles((theme: Theme) => {
+const useStyles = makeStyles(() => {
   return createStyles({
     fab: {
       position: 'fixed',

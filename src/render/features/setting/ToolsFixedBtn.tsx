@@ -1,8 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import path from 'path';
 import {
   makeStyles,
-  Theme,
   createStyles,
   IconButton,
   Tooltip,
@@ -21,7 +20,7 @@ import PermDataSettingIcon from '@material-ui/icons/PermDataSetting';
 import { chromeFoldName } from '../../../common/constant';
 import store from '../../../main/store';
 
-const useStyles = makeStyles((theme: Theme) => {
+const useStyles = makeStyles(() => {
   return createStyles({
     fab: {
       position: 'fixed',
