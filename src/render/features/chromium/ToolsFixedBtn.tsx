@@ -25,7 +25,6 @@ import { chromeFoldName } from '../../../common/constant';
 import LocalChromiumContainer from '../../stores/localChromium';
 import store from '../../../main/store';
 import { killAllChromiumProcess } from '../../utils';
-import { getSpiderResMessage } from '../../../common/chromium';
 
 const useStyles = makeStyles(() => {
   return createStyles({
@@ -78,7 +77,7 @@ const ToolsFixedBtn = () => {
     popupState.close();
   }, [GetLocalChromiumPaths, openMessage, popupState]);
 
-  const handleOpenCOnfig = useCallback(async () => {
+  const handleOpenConfig = useCallback(async () => {
     store.openInEditor();
   }, []);
 
@@ -87,16 +86,6 @@ const ToolsFixedBtn = () => {
     openMessage('开始获取配置');
     popupState.close();
   }, [popupState, openMessage, handleSpider]);
-
-  const { step } = spiderRes;
-
-  const spiderResMessage = getSpiderResMessage(spiderRes);
-
-  useEffect(() => {
-    if (step === 'ERROR' || step === 'FINISHED') {
-      openMessage(spiderResMessage, 0);
-    }
-  }, [step, spiderResMessage, openMessage]);
 
   return (
     <>
@@ -143,11 +132,11 @@ const ToolsFixedBtn = () => {
             </IconButton>
           </Tooltip>
           <Tooltip title="打开配置文件">
-            <IconButton aria-label="open-config" onClick={handleOpenCOnfig}>
+            <IconButton aria-label="open-config" onClick={handleOpenConfig}>
               <PermDataSettingIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title={spiderResMessage || '获取配置'}>
+          <Tooltip title={spiderRes || '获取配置'}>
             <IconButton aria-label="open-config" onClick={handleGetSpider}>
               <CloudDownloadIcon />
             </IconButton>

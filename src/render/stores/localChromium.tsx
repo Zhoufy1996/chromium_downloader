@@ -6,13 +6,6 @@ import { readdirSync, rmdirSync } from 'fs';
 import store, { RevisionToVersionMap } from '../../main/store';
 import { chromeFoldName } from '../../common/constant';
 import { getLocalChromiumFolderNames } from '../../common/file';
-import {
-  ChromiumServiceSteps,
-  SpiderCallbackProps,
-} from '../../common/chromium/types';
-
-export type SpiderResSteps = ChromiumServiceSteps;
-export type SpiderRes = SpiderCallbackProps;
 
 interface LocalChromiumData {
   revision: string;
@@ -25,7 +18,7 @@ interface State {
   localChromiumData: {
     [revision: string]: LocalChromiumData;
   };
-  spiderRes: SpiderRes;
+  spiderRes: string;
   downloadingRevision: string;
   revisionToVersionMap: RevisionToVersionMap;
 }
@@ -35,11 +28,7 @@ export type LocalChromoimState = State;
 const useLocalChromium = () => {
   const [state, setState] = useState<State>({
     localChromiumData: {},
-    spiderRes: {
-      step: 'UNDO',
-      searchAllCount: 0,
-      searchedCount: 0,
-    },
+    spiderRes: '',
     downloadingRevision: '',
     revisionToVersionMap: {},
   });
@@ -125,17 +114,6 @@ const useLocalChromium = () => {
     [GetLocalChromiumPaths]
   );
 
-  const initSpiderStep = useCallback(() => {
-    setState((pre) => {
-      return {
-        ...pre,
-        spiderRes: {
-          ...pre.spiderRes,
-          step: 'UNDO',
-        },
-      };
-    });
-  }, []);
   const {
     localChromiumData,
     spiderRes,
@@ -152,7 +130,6 @@ const useLocalChromium = () => {
     downloadChrome,
     deleteChrome,
     handleSpider,
-    initSpiderStep,
   };
 };
 

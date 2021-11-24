@@ -1,5 +1,3 @@
-import formatDuration from 'format-duration';
-
 /* eslint-disable import/prefer-default-export */
 export const sleep = (timeount = 300) => {
   return new Promise((resolve) => {
@@ -7,33 +5,6 @@ export const sleep = (timeount = 300) => {
       resolve(true);
     }, timeount);
   });
-};
-
-export const calculateRestTime = (allCount: number, startIndex: number) => {
-  let startTime = new Date().getTime();
-  let lastTime = 0;
-
-  const getRestTime = (currentIndex: number) => {
-    const now = new Date().getTime();
-    if (currentIndex - startIndex === 0) {
-      return null;
-    }
-    const speed = (now - startTime + lastTime) / (currentIndex - startIndex);
-    const restTime = speed * (allCount - currentIndex);
-    return formatDuration(restTime);
-  };
-  const pause = () => {
-    lastTime = new Date().getTime() - startTime + lastTime;
-  };
-  const continueFn = () => {
-    startTime = new Date().getTime();
-  };
-
-  return {
-    getRestTime,
-    pause,
-    continue: continueFn,
-  };
 };
 
 export const debounce = <T extends unknown[], U>(

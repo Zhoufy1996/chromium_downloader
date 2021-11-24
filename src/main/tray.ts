@@ -3,25 +3,11 @@ import path from 'path';
 import fs from 'fs';
 import { getAssetPath, getFileSaveFolder } from './utils';
 import { copyFile } from '../common/file';
-// eslint-disable-next-line import/no-cycle
-import { startSpider, stopSpider } from './chromium';
+import { getSpiderTrayMenu } from './chromium/service';
 
-export const updateTrayMenu = () => {
-  const { isCollecting } = global;
-  const contextMenu = Menu.buildFromTemplate([
-    isCollecting
-      ? {
-          label: '停止爬虫',
-          click: () => {
-            stopSpider();
-          },
-        }
-      : {
-          label: '获取配置',
-          click: () => {
-            startSpider();
-          },
-        },
+export const updateTrayMenu = async () => {
+  const spiderTrayMenu = await getSpiderTrayMenu();
+  const globalMenu = [
     {
       label: '显示主界面',
       click: () => {
@@ -38,16 +24,17 @@ export const updateTrayMenu = () => {
         app.quit();
       },
     },
+  ];
+  const contextMenu = Menu.buildFromTemplate([
+    ...spiderTrayMenu,
+    ...globalMenu,
   ]);
+
   global.tray?.setContextMenu(contextMenu);
 };
 
 export const setTrayTooltip = (title: string) => {
-  global.tray?.setTitle(title);
-};
-
-export const initialTrayTooltip = () => {
-  global.tray?.setTitle('chromium下载器');
+  global.tray?.setToolTip(title);
 };
 
 export const createTray = () => {
@@ -62,5 +49,4 @@ export const createTray = () => {
 
   global.tray = new Tray(iconPath);
   updateTrayMenu();
-  initialTrayTooltip();
 };

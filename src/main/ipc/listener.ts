@@ -1,9 +1,16 @@
 import { ipcMain, app, BrowserWindow } from 'electron';
-import ChromiumService, { startSpider } from './chromium';
-import store from './store';
-import { getFileSaveFolder } from './utils';
+import { downloadChromium } from '../chromium/remote';
+import {
+  continueSpider,
+  pauseSpider,
+  startSpider,
+  stopSpider,
+} from '../chromium/service';
+import store from '../store';
+import { getChromiumSavePath, getFileSaveFolder } from '../utils';
+import { setIntervalSpider } from './send';
 
-const registerCommonEvent = () => {
+export const registListeners = () => {
   ipcMain.handle('update-store-file', (_, obj) => {
     return store.set(obj);
   });
@@ -30,21 +37,25 @@ const registerCommonEvent = () => {
     const mainWindow = BrowserWindow.fromId(global.mianId);
     mainWindow?.hide();
   });
-};
 
-const registerChromiumEvent = () => {
   ipcMain.on('start-chromium-spider', () => {
     startSpider();
+    setIntervalSpider();
+  });
+
+  ipcMain.on('pause-chromium-spider', () => {
+    pauseSpider();
+  });
+
+  ipcMain.on('continue-chromium-spider', () => {
+    continueSpider();
+  });
+
+  ipcMain.on('stop-chromium-spider', () => {
+    stopSpider();
   });
 
   ipcMain.handle('download-chrome', (_, revision) => {
-    return ChromiumService.downloadChromium({ revision });
+    return downloadChromium({ revision, downloadPath: getChromiumSavePath() });
   });
 };
-
-const registerEvent = () => {
-  registerCommonEvent();
-  registerChromiumEvent();
-};
-
-export default registerEvent;

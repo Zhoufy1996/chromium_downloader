@@ -1,11 +1,12 @@
-import { chromeFoldName } from '../common/constant';
+import { chromeFoldName, configFoldName } from '../common/constant';
 import { createFolder } from '../common/file';
-import registerEvent from './ipc';
+import { registListeners } from './ipc/listener';
 import { createTray } from './tray';
 
 const init = () => {
   createFolder(chromeFoldName);
-  registerEvent();
+  createFolder(configFoldName);
+  registListeners();
   createTray();
 };
 

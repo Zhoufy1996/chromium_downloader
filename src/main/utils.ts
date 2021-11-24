@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { chromeFoldName } from '../common/constant';
 
@@ -15,4 +15,10 @@ export const getAssetPath = (...paths: string[]): string => {
     ? path.join(process.resourcesPath, 'assets')
     : path.join(process.cwd(), 'assets');
   return path.join(RESOURCES_PATH, ...paths);
+};
+
+export const getMainBrower = () => {
+  const mainId = global.mianId;
+  const mainBrowser = BrowserWindow.fromId(mainId);
+  return mainBrowser;
 };

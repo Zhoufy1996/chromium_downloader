@@ -13,15 +13,18 @@ interface SettingItem {
   label: string;
 }
 
+interface CodePreset {
+  path: string;
+  name: string;
+}
 export interface Setting {
   prefix: SettingItem;
   interval: SettingItem;
+  vscodeCommand: SettingItem;
+  codePresets: CodePreset[];
 }
 
-export const initialSetting: {
-  prefix: SettingItem;
-  interval: SettingItem;
-} = {
+export const initialSetting: Setting = {
   prefix: {
     value: 'Win',
     type: 'text',
@@ -32,6 +35,12 @@ export const initialSetting: {
     type: 'number',
     label: 'interval',
   },
+  vscodeCommand: {
+    value: 'code',
+    type: 'text',
+    label: 'vscode-command',
+  },
+  codePresets: [],
 };
 
 const store = new Store<{
@@ -45,6 +54,14 @@ const store = new Store<{
     setting: initialSetting,
   },
   cwd: app ? app.getPath('userData') : remote.app.getPath('userData'),
+  migrations: {
+    '0.0.1': (s) => {
+      s.set('setting.vscodeCommand', initialSetting.vscodeCommand);
+    },
+    '0.0.2': (s) => {
+      s.set('setting.codePresets', initialSetting.codePresets);
+    },
+  },
 });
 
 export default store;
