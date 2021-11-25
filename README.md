@@ -9,12 +9,11 @@ yarn package
 ```
 
 ```
-思路
-爬虫爬取https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Win_x64/  所有修订号
+header:
+1. 可拖动
+2. 左上显示标题
 
-https://omahaproxy.appspot.com/ 从修订号获取版本号
+sidebar:
 
-
-数据本地存储或者存数据库
-
+view:
 ```

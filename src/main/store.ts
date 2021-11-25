@@ -61,6 +61,12 @@ const store = new Store<{
     '0.0.2': (s) => {
       s.set('setting.codePresets', initialSetting.codePresets);
     },
+    '0.0.3': (s) => {
+      s.set('setting.codePresets', []);
+    },
+    '0.0.4': (s) => {
+      s.set('setting.codePresets', initialSetting.codePresets);
+    },
   },
 });
 

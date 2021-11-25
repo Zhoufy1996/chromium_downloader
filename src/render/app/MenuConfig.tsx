@@ -1,6 +1,6 @@
-import ChromiumView from '../features/chromium/chromiumView';
-import ScriptsView from '../features/scripts/ScriptsView';
-import SettingView from '../features/setting/SettingView';
+import ChromiumView from '../views/chromium';
+import ScriptView from '../views/script';
+import SettingView from '../views/setting';
 
 interface MenuConfig {
   key: string;
@@ -13,19 +13,19 @@ const menuConfig: MenuConfig[] = [
   {
     key: 'chromium',
     path: '/chromium',
-    title: 'chromium下载器',
+    title: 'chromium下载',
     component: ChromiumView,
   },
   {
-    key: 'scripts',
-    path: '/scripts',
+    key: 'script',
+    path: '/script',
     title: '脚本',
-    component: ScriptsView,
+    component: ScriptView,
   },
   {
     key: 'setting',
     path: '/setting',
-    title: '配置',
+    title: '设置',
     component: SettingView,
   },
 ];

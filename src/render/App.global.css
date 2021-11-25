@@ -1,3 +1,5 @@
+@import 'antd/dist/antd.dark.css';
+
 .circle {
   animation-duration: 1s;
   animation-iteration-count: infinite;
@@ -23,6 +25,11 @@ body,
 
 .drag-header {
   -webkit-app-region: drag;
+}
+
+.drag-header > .button {
+  -webkit-app-region: no-drag;
+  cursor: pointer;
 }
 
 button {
