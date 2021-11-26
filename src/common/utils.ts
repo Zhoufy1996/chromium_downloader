@@ -22,3 +22,17 @@ export const debounce = <T extends unknown[], U>(
     });
   };
 };
+
+export const sum = (...args: number[]) => {
+  return args.reduce((acc, cur) => {
+    return acc + cur;
+  }, 0);
+};
+
+export const average = (...args: number[]) => {
+  if (args.length === 0) {
+    return 0;
+  }
+
+  return sum(...args) / args.length;
+};

@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { getLocalChromiumRevisions } from '../../common/file';
+import { average, sum } from '../../common/utils';
 import store from '../store';
 import ChromiumSpider from './spider';
 
@@ -99,6 +100,10 @@ class ChromiumService {
     const status = this.getStatus();
     const { revisions, searchedVersions } = this.spider;
 
+    const averageTime = average(
+      ...Object.values(searchedVersions).map((item) => item.searchedTimeMS)
+    );
+
     type MessageMap = {
       [State in Status]: string;
     };
@@ -108,8 +113,12 @@ class ChromiumService {
       GET_REVISIONS: '获取修订号中',
       GET_VERSIONS: `获取版本号中,进度：${
         Object.keys(searchedVersions).length
-      }/${revisions.length}`,
-      FINISHED: `爬取完毕：共计${revisions.length}`,
+      }/${revisions.length},预计时间：${(
+        (averageTime *
+          (revisions.length - Object.keys(searchedVersions).length)) /
+        1000
+      ).toFixed(2)}`,
+      FINISHED: `爬取完毕：共计${revisions.length}个`,
     };
 
     return messageMap[status];
