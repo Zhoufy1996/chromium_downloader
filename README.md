@@ -17,3 +17,33 @@ sidebar:
 
 view:
 ```
+
+```
+脚本
+
+
+例如
+[
+  {
+    name: "script",
+    value: "vscode ."
+  },
+  {
+    name: "arg1",
+    value: "xxx"
+  },
+  {
+    name: "arg2",
+    value: "yyy"
+  }
+]
+
+
+let str = "{script} {arg1} {arg2}"
+
+args.forEach(item => {
+  str.replace(RegExp(`{${name}?}/g`), value)
+})
+
+=> vscode . xxx yyy
+```
