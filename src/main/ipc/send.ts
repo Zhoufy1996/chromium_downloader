@@ -1,6 +1,7 @@
 import {
+  destorySpider,
   getSpiderMessage,
-  hasSpiderExist,
+  isFinished,
   saveToStore,
 } from '../chromium/service';
 import { setTrayTooltip, updateTrayMenu } from '../tray';
@@ -18,8 +19,10 @@ export const setIntervalSpider = async () => {
     };
     await execute();
 
-    if (!hasSpiderExist()) {
+    if (isFinished()) {
+      await execute();
       clearInterval(timerId);
+      destorySpider();
     }
   }, 1000);
 

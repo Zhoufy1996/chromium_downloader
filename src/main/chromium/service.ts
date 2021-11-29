@@ -1,6 +1,6 @@
 import { app } from 'electron';
 import { getLocalChromiumRevisions } from '../../common/file';
-import { average, sum } from '../../common/utils';
+import { average } from '../../common/utils';
 import store from '../store';
 import ChromiumSpider from './spider';
 
@@ -14,6 +14,23 @@ const handleFilterRevisions = (revisions: string[]) => {
     index += Number(setting.interval.value);
   }
   return shouldSearchedRevisions;
+};
+
+const cutRepetitionVersion = (map: {
+  [k: string]: string;
+}): { [k: string]: string } => {
+  const newMap: { [k: string]: { version: string; revision: string } } = {};
+  Object.keys(map).forEach((revision) => {
+    const version = map[revision];
+    const versionInt = version.split('.')[0];
+    newMap[versionInt] = { version, revision };
+  });
+
+  return Object.fromEntries(
+    Object.keys(newMap).map((versionInt) => {
+      return [newMap[versionInt].revision, newMap[versionInt].version];
+    })
+  );
 };
 
 type Status =
@@ -117,7 +134,7 @@ class ChromiumService {
         (averageTime *
           (revisions.length - Object.keys(searchedVersions).length)) /
         1000
-      ).toFixed(2)}`,
+      ).toFixed(0)}秒`,
       FINISHED: `爬取完毕：共计${revisions.length}个`,
     };
 
@@ -128,20 +145,37 @@ class ChromiumService {
     if (this.spider == null) {
       return;
     }
+    if (this.getStatus() !== 'FINISHED') {
+      return;
+    }
     const { revisions, searchedVersions } = this.spider;
     const revisionToVersionMap = store.get('revisionToVersionMap');
     const downloadedRevisions = await getLocalChromiumRevisions(
       app.getPath('userData')
     );
-    const newRevisions = [...new Set([...revisions, ...downloadedRevisions])];
-    const newMap = Object.fromEntries(
-      newRevisions.map((revision) => {
-        const version =
-          revisionToVersionMap[revision] || searchedVersions[revision]?.version;
-        return [revision, version];
-      })
+    const newRevisions = [
+      ...new Set([
+        ...revisions.filter((revision) => {
+          return searchedVersions[revision].version !== 'error';
+        }),
+        ...downloadedRevisions,
+      ]),
+    ].filter((revision) => {
+      const version =
+        revisionToVersionMap[revision] || searchedVersions[revision]?.version;
+      return !!version;
+    });
+    const newMap = cutRepetitionVersion(
+      Object.fromEntries(
+        newRevisions.map((revision) => {
+          const version =
+            revisionToVersionMap[revision] ||
+            searchedVersions[revision]?.version;
+          return [revision, version];
+        })
+      )
     );
-    store.set('revisions', newRevisions);
+    store.set('revisions', Object.keys(newMap));
     store.set('revisionToVersionMap', newMap);
   }
 
@@ -224,7 +258,7 @@ class ChromiumService {
 
 let chromiumService: ChromiumService | null = null;
 
-export const hasSpiderExist = () => {
+const hasSpiderExist = () => {
   return chromiumService != null;
 };
 
@@ -275,4 +309,18 @@ export const getSpiderTrayMenu = async () => {
     return [];
   }
   return getSpider().getSpiderTrayMenu();
+};
+
+export const isFinished = () => {
+  if (hasSpiderExist()) {
+    return getSpider().getStatus() === 'FINISHED';
+  }
+  return false;
+};
+
+export const destorySpider = () => {
+  if (hasSpiderExist()) {
+    getSpider().destory();
+    chromiumService = null;
+  }
 };

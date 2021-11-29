@@ -9,12 +9,13 @@ import { sleep } from '../../common/utils';
 class ChromiumSpiderCore {
   private browser: puppeteer.Browser | undefined;
 
-  private window: BrowserWindow | undefined;
+  private window: BrowserWindow | null;
 
   private prefix: string;
 
   constructor({ prefix }: { prefix: string }) {
     this.prefix = prefix;
+    this.window = null;
   }
 
   // 单例,使用尽可能少的内存
@@ -25,11 +26,17 @@ class ChromiumSpiderCore {
     }
     if (this.window == null) {
       this.window = new BrowserWindow({
-        show: true,
+        show: false,
       });
     }
     const page = await pie.getPage(this.browser, this.window);
     return page;
+  }
+
+  async refreshPage() {
+    const page = await this.getPage();
+    page.close();
+    this.window = null;
   }
 
   async getAllRevisionsCore() {
@@ -103,7 +110,7 @@ class ChromiumSpiderCore {
       );
       await page.waitForFunction(
         () => {
-          return document.querySelector('code')?.textContent != null;
+          return document.querySelector('#content') != null;
         },
         {
           timeout: 3000,
@@ -120,7 +127,6 @@ class ChromiumSpiderCore {
     if (version == null) {
       throw new Error(`not found: ${revision}`);
     }
-
     return version;
   }
 

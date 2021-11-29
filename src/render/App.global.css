@@ -23,6 +23,11 @@ body,
   overflow: hidden;
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
 .drag-header {
   -webkit-app-region: drag;
 }

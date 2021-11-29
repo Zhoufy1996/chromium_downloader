@@ -24,6 +24,11 @@ class BrowserIpc {
     return ipcRenderer.invoke(channel, ...args);
   }
 
+  send(channel: string, ...args: any[]) {
+    this.messages.push('send', channel, args.toString());
+    return ipcRenderer.send(channel, ...args);
+  }
+
   getMessages() {
     return this.messages;
   }

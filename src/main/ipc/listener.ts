@@ -58,4 +58,20 @@ export const registListeners = () => {
   ipcMain.handle('download-chrome', (_, revision) => {
     return downloadChromium({ revision, downloadPath: getChromiumSavePath() });
   });
+
+  ipcMain.on('open-new-browser', (_, path: string) => {
+    const subWindow = new BrowserWindow({
+      show: true,
+      width: 1024,
+      height: 728,
+      minHeight: 400,
+      minWidth: 600,
+      frame: false,
+      webPreferences: {
+        nodeIntegration: true,
+        enableRemoteModule: true,
+      },
+    });
+    subWindow.loadURL(`file://${__dirname}/index.html/#/${path}`);
+  });
 };

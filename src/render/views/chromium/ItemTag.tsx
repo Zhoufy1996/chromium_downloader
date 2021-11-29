@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Popover, Tag, TagProps, Menu } from 'antd';
+import { Tag, TagProps, Menu, Dropdown } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
 import { shell } from 'electron';
 import { rmdirSync } from 'fs';
 import ChromiumContainer from '../../stores/chromium';
@@ -13,13 +14,13 @@ interface ItemTagProps {
   folderPath: string;
 }
 
-const ItemTag = ({
+const ItemTag: React.FC<ItemTagProps> = ({
   version,
   revision,
   isDownloaded,
   executablePath,
   folderPath,
-}: ItemTagProps) => {
+}) => {
   const { refreshLocalChromiumData } = ChromiumContainer.useContainer();
 
   interface State {
@@ -30,78 +31,106 @@ const ItemTag = ({
     isDownloading: false,
   });
 
-  const color: TagProps['color'] = useMemo(() => {
+  const status = useMemo(() => {
+    if (state.isDownloading) {
+      return 'downloading';
+    }
+
     if (isDownloaded) {
+      return 'isDownloaded';
+    }
+
+    return 'notDownloaded';
+  }, [isDownloaded, state.isDownloading]);
+
+  const color: TagProps['color'] = useMemo(() => {
+    if (status === 'isDownloaded') {
       return 'success';
     }
 
-    if (state.isDownloading) {
+    if (status === 'downloading') {
       return 'process';
     }
 
     return 'default';
-  }, [isDownloaded, state.isDownloading]);
+  }, [status]);
 
-  // 打不开怎么办
-  const openChromium = () => {
-    try {
-      shell.openPath(executablePath);
-    } catch (e) {
-      console.log(e);
+  const icon = useMemo(() => {
+    if (status === 'downloading') {
+      return <SyncOutlined spin />;
     }
-  };
+    return null;
+  }, [status]);
 
-  const deleteChromium = async () => {
-    rmdirSync(folderPath, { recursive: true });
-    await refreshLocalChromiumData();
-  };
+  const menu = useMemo(() => {
+    if (status === 'isDownloaded') {
+      return (
+        <Menu
+          onClick={async ({ key }) => {
+            if (key === 'open') {
+              try {
+                shell.openPath(executablePath);
+              } catch (e) {
+                console.log(e);
+              }
+            }
 
-  const downloadChromium = async () => {
-    setState((pre) => {
-      return {
-        ...pre,
-        isDownloading: true,
-      };
-    });
-    await browerIpc.invoke('download-chrome', revision);
-    setState((pre) => {
-      return {
-        ...pre,
-        isDownloading: false,
-      };
-    });
-    await refreshLocalChromiumData();
-  };
-
-  const menu = (
-    <Menu
-      onClick={({ key }) => {
-        if (key === 'download') {
-          downloadChromium();
-        }
-        if (key === 'open') {
-          openChromium();
-        }
-
-        if (key === 'delete') {
-          deleteChromium();
-        }
-      }}
-    >
-      {!isDownloaded && (
-        <>
-          <Menu.Item key="download">下载</Menu.Item>
+            if (key === 'delete') {
+              rmdirSync(folderPath, { recursive: true });
+              await refreshLocalChromiumData();
+            }
+          }}
+        >
           <Menu.Item key="open">打开</Menu.Item>
-        </>
-      )}
-      {isDownloaded && <Menu.Item key="delete">删除</Menu.Item>}
-    </Menu>
-  );
+          <Menu.Divider />
+          <Menu.Item key="delete">删除</Menu.Item>
+        </Menu>
+      );
+    }
 
+    return (
+      <Menu
+        onClick={async () => {
+          setState((pre) => {
+            return {
+              ...pre,
+              isDownloading: true,
+            };
+          });
+          await browerIpc.invoke('download-chrome', revision);
+          setState((pre) => {
+            return {
+              ...pre,
+              isDownloading: false,
+            };
+          });
+          await refreshLocalChromiumData();
+        }}
+      >
+        <Menu.Item key="download">下载</Menu.Item>
+      </Menu>
+    );
+  }, [status, executablePath, refreshLocalChromiumData, revision, folderPath]);
+
+  const tag = useMemo(() => {
+    return (
+      <Tag
+        icon={icon}
+        color={color}
+        style={{ marginTop: 15, cursor: 'pointer', width: 90 }}
+      >
+        {version}
+      </Tag>
+    );
+  }, [color, icon, version]);
   return (
-    <Popover title={revision} content={menu}>
-      <Tag color={color}>{version}</Tag>
-    </Popover>
+    <>
+      {status === 'downloading' ? (
+        tag
+      ) : (
+        <Dropdown overlay={menu}>{tag}</Dropdown>
+      )}
+    </>
   );
 };
 

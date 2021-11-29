@@ -6,6 +6,7 @@ import { ipcRenderer, shell } from 'electron';
 import menuConfig from './MenuConfig';
 import DropDownButton from '../components/DropDownButton';
 import store from '../../main/store';
+import browerIpc from '../ipc';
 
 const helpConfig: { key: string; title: string; onClick: () => void }[] = [
   {
@@ -21,6 +22,13 @@ const helpConfig: { key: string; title: string; onClick: () => void }[] = [
     onClick: async () => {
       const userDataPath = await ipcRenderer.invoke('get-userData-path');
       shell.openPath(userDataPath);
+    },
+  },
+  {
+    key: 'ipc_data',
+    title: '查看ipc数据',
+    onClick: () => {
+      browerIpc.send('open-new-browser', 'ipcmessage');
     },
   },
 ];
@@ -42,9 +50,12 @@ const Header = () => {
   return (
     <div
       className="drag-header"
-      style={{ display: 'flex', justifyContent: 'space-between' }}
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
     >
-      <div>
+      <div style={{ display: 'flex' }}>
         <DropDownButton
           buttonText="菜单"
           dataSource={menuConfig}
@@ -56,11 +67,23 @@ const Header = () => {
           onMenuClick={handleHelpClick}
         />
       </div>
-      <div>
-        <Button type="text" shape="circle">
+      <div style={{ display: 'flex' }}>
+        <Button
+          type="text"
+          shape="circle"
+          onClick={() => {
+            browerIpc.send('hide');
+          }}
+        >
           <MinusOutlined />
         </Button>
-        <Button type="text" shape="circle">
+        <Button
+          type="text"
+          shape="circle"
+          onClick={() => {
+            browerIpc.send('close');
+          }}
+        >
           <CloseOutlined />
         </Button>
       </div>

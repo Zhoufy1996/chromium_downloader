@@ -62,3 +62,21 @@ export const killAllChromiumProcess = async (callback?: () => unknown) => {
     killChromiumPidList(chromeProcessPids);
   });
 };
+
+interface HandleScriptProps {
+  scriptTemplate: string;
+  params: {
+    [name: string]: string;
+  };
+}
+
+export const handleExecuteScript = ({
+  scriptTemplate,
+  params,
+}: HandleScriptProps) => {
+  let scriptCode = scriptTemplate;
+  Object.keys(params).forEach((name) => {
+    scriptCode = scriptCode.replace(RegExp(`{${name}}`, 'g'), params[name]);
+  });
+  childProcess.exec(scriptCode);
+};

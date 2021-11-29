@@ -54,6 +54,7 @@ class ChromiumSpider extends ChromiumSpiderCore {
       }
       let version = '';
       try {
+        await this.refreshPage();
         version = await this.getVersionByRevision(nextRevision);
       } catch (e) {
         version = 'error';

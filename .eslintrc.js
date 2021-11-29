@@ -26,5 +26,7 @@ module.exports = {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
+    'react/prop-types': 'off',
+    'react/require-default-props': 'off',
   },
 };

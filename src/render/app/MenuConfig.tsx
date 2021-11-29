@@ -28,8 +28,14 @@ const menuConfig: MenuConfig[] = [
     title: '设置',
     component: SettingView,
   },
+  {
+    key: 'ipcmessage',
+    path: '/ipcmessage',
+    title: 'ipc数据',
+    component: SettingView,
+  },
 ];
 
-export const redirectPath = '/chromium';
+export const redirectPath = '/script';
 
 export default menuConfig;
