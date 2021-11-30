@@ -14,14 +14,14 @@ interface SettingItem {
 }
 
 export interface Setting {
-  prefix: SettingItem;
-  interval: SettingItem;
+  [key: string]: SettingItem;
 }
 
 export interface Script {
   name: string;
   scriptTemplate: string;
-  presetParams: { [name: string]: string }[];
+  presetParams: { key: string; alias: string; [name: string]: string }[];
+  key: string;
 }
 
 export const initialSetting: Setting = {

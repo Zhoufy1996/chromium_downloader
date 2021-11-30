@@ -1,14 +1,20 @@
-import { Card, Input, Form, Button } from 'antd';
+import { Card, Input, Form, Button, AutoComplete } from 'antd';
 import React from 'react';
+import { EditOutlined } from '@ant-design/icons';
 import { Script } from '../../../main/store';
 import { handleExecuteScript } from '../../utils';
 
-type ItemCardProps = Script;
+interface ItemCardProps extends Script {
+  onEdit: (k: string) => void;
+  currentKey: string;
+}
 
 const ItemCard: React.FC<ItemCardProps> = ({
   name,
   scriptTemplate,
   presetParams,
+  currentKey,
+  onEdit = () => {},
 }) => {
   const paramNames = [
     ...new Set(
@@ -25,15 +31,32 @@ const ItemCard: React.FC<ItemCardProps> = ({
     });
   };
   return (
-    <Card title={name}>
-      <div>脚本模板：{scriptTemplate}</div>
+    <Card
+      title={name}
+      extra={
+        <Button
+          onClick={() => onEdit(currentKey)}
+          shape="circle"
+          icon={<EditOutlined />}
+        />
+      }
+    >
+      <div>{scriptTemplate}</div>
       <div>
-        参数：
         <Form form={form} onFinish={onExecute}>
           {paramNames?.map((param) => {
             return (
-              <Form.Item key={param} label={param}>
-                <Input />
+              <Form.Item key={param} name={param} label={param}>
+                <AutoComplete
+                  options={presetParams.map((item) => {
+                    return {
+                      label: item.alias,
+                      value: item[param],
+                    };
+                  })}
+                >
+                  <Input placeholder="..." />
+                </AutoComplete>
               </Form.Item>
             );
           })}

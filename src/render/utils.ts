@@ -63,7 +63,7 @@ export const killAllChromiumProcess = async (callback?: () => unknown) => {
   });
 };
 
-interface HandleScriptProps {
+interface HandleExecuteScriptProps {
   scriptTemplate: string;
   params: {
     [name: string]: string;
@@ -73,10 +73,24 @@ interface HandleScriptProps {
 export const handleExecuteScript = ({
   scriptTemplate,
   params,
-}: HandleScriptProps) => {
+}: HandleExecuteScriptProps) => {
   let scriptCode = scriptTemplate;
   Object.keys(params).forEach((name) => {
     scriptCode = scriptCode.replace(RegExp(`{${name}}`, 'g'), params[name]);
   });
   childProcess.exec(scriptCode);
+};
+
+export const handleGetParams = (scriptTemplate: string) => {
+  if (typeof scriptTemplate !== 'string') {
+    return [];
+  }
+  const paramNames = [
+    ...new Set(
+      scriptTemplate.match(/{.*?}/g)?.map((param) => {
+        return param.substring(1, param.length - 1);
+      })
+    ),
+  ];
+  return paramNames;
 };
