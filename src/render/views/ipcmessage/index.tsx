@@ -2,7 +2,7 @@ import { Button, Table, TableProps } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import browerIpc from '../../ipc';
 
-const IpcMessage = () => {
+const IpcMessageView = () => {
   const [messages, setMessages] = useState<string[]>([]);
 
   const refreshMessages = () => {
@@ -10,7 +10,12 @@ const IpcMessage = () => {
   };
 
   useEffect(() => {
-    browerIpc.getMessages();
+    const key = browerIpc.addBrowserIpcListener((msgs) => {
+      setMessages(msgs);
+    });
+    return () => {
+      browerIpc.removeBrowserIpcListener(key);
+    };
   }, []);
 
   const dataSource = useMemo(() => {
@@ -35,15 +40,20 @@ const IpcMessage = () => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: 12 }}>
       <div>
         <Button onClick={refreshMessages}>刷新</Button>
       </div>
-      <div>
-        <Table dataSource={dataSource} columns={columns} />
+      <div style={{ marginTop: 6 }}>
+        <Table
+          rowKey="seq"
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+        />
       </div>
     </div>
   );
 };
 
-export default IpcMessage;
+export default IpcMessageView;

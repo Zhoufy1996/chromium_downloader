@@ -6,7 +6,7 @@ declare global {
   namespace NodeJS {
     interface Global {
       tray: Tray | undefined;
-      mianId: number;
+      mainId: number;
     }
   }
 }

@@ -1,5 +1,5 @@
 import childProcess from 'child_process';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 
 const isChromiumProcess = (
   pid: string,
@@ -93,4 +93,10 @@ export const handleGetParams = (scriptTemplate: string) => {
     ),
   ];
   return paramNames;
+};
+
+export const isMainWindow = () => {
+  console.log(remote.getCurrentWindow().id);
+  console.log(remote.getGlobal('mainId'));
+  return remote.getCurrentWindow().id === remote.getGlobal('mainId');
 };

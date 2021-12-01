@@ -1,4 +1,5 @@
 import ChromiumView from '../views/chromium';
+import IpcMessageView from '../views/ipcmessage';
 import ScriptView from '../views/script';
 import SettingView from '../views/setting';
 
@@ -31,11 +32,11 @@ const menuConfig: MenuConfig[] = [
   {
     key: 'ipcmessage',
     path: '/ipcmessage',
-    title: 'ipc数据',
-    component: SettingView,
+    title: '设置',
+    component: IpcMessageView,
   },
 ];
 
-export const redirectPath = '/script';
+export const redirectPath = '/chromium';
 
 export default menuConfig;

@@ -64,9 +64,9 @@ const createWindow = async () => {
     },
   });
 
-  global.mianId = mainWindow.id;
+  global.mainId = mainWindow.id;
 
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL(`file://${process.cwd()}/src/index.html`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -74,6 +74,7 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
+
     // if (process.env.START_MINIMIZED) {
     //   mainWindow.minimize();
     // } else {

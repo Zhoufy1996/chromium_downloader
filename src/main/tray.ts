@@ -11,7 +11,7 @@ export const updateTrayMenu = async () => {
     {
       label: '显示主界面',
       click: () => {
-        const mainWindow = BrowserWindow.fromId(global.mianId);
+        const mainWindow = BrowserWindow.fromId(global.mainId);
         mainWindow?.show();
         mainWindow?.focus();
       },
@@ -19,7 +19,7 @@ export const updateTrayMenu = async () => {
     {
       label: '退出',
       click: () => {
-        const mainWindow = BrowserWindow.fromId(global.mianId);
+        const mainWindow = BrowserWindow.fromId(global.mainId);
         mainWindow?.destroy();
         app.quit();
       },

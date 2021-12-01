@@ -27,15 +27,17 @@ export const registListeners = () => {
     });
   });
 
-  ipcMain.on('close', () => {
-    const mainWindow = BrowserWindow.fromId(global.mianId);
-    mainWindow?.destroy();
-    app.quit();
+  ipcMain.on('close', async (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    await window?.destroy();
+    if (BrowserWindow.getAllWindows().length === 0) {
+      app.quit();
+    }
   });
 
-  ipcMain.on('hide', () => {
-    const mainWindow = BrowserWindow.fromId(global.mianId);
-    mainWindow?.hide();
+  ipcMain.on('hide', (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    window?.hide();
   });
 
   ipcMain.on('start-chromium-spider', () => {
@@ -72,6 +74,9 @@ export const registListeners = () => {
         enableRemoteModule: true,
       },
     });
-    subWindow.loadURL(`file://${__dirname}/index.html/#/${path}`);
+    subWindow.loadURL(`file://${process.cwd()}/src/index.html`);
+    subWindow.webContents.on('did-finish-load', () => {
+      subWindow.webContents.send('goto', path);
+    });
   });
 };

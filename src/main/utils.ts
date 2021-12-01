@@ -18,7 +18,6 @@ export const getAssetPath = (...paths: string[]): string => {
 };
 
 export const getMainBrower = () => {
-  const mainId = global.mianId;
-  const mainBrowser = BrowserWindow.fromId(mainId);
+  const mainBrowser = BrowserWindow.fromId(global.mainId);
   return mainBrowser;
 };
