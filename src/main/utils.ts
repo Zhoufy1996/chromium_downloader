@@ -1,13 +1,13 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
-import { chromeFoldName } from '../common/constant';
+import { chromiumFoldName } from '../common/constant';
 
 export const getFileSaveFolder = () => {
   return app.getPath('userData');
 };
 
 export const getChromiumSavePath = () => {
-  return path.join(getFileSaveFolder(), chromeFoldName);
+  return path.join(getFileSaveFolder(), chromiumFoldName);
 };
 
 export const getAssetPath = (...paths: string[]): string => {

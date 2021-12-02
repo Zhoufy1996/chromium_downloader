@@ -1,5 +1,5 @@
 import { ipcMain, app, BrowserWindow } from 'electron';
-import { downloadChromium } from '../chromium/remote';
+import { downloadChromium } from '../chromium/core';
 import {
   continueSpider,
   pauseSpider,

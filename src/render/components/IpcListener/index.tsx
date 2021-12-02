@@ -1,6 +1,7 @@
+import { ipcRenderer } from 'electron';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router';
-import browerIpc, { Listener } from '../../ipc';
+import { Listener } from '../../ipc';
 
 const IpcListener = () => {
   const history = useHistory();
@@ -9,10 +10,10 @@ const IpcListener = () => {
     const listener: Listener = (_, path: string) => {
       history.push(path);
     };
-    browerIpc.on('goto', listener);
+    ipcRenderer.on('goto', listener);
 
     return () => {
-      browerIpc.removeListener('goto', listener);
+      ipcRenderer.removeListener('goto', listener);
     };
   }, [history]);
   return null;

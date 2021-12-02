@@ -6,29 +6,27 @@ import { ipcRenderer, shell } from 'electron';
 import menuConfig from './MenuConfig';
 import DropDownButton from '../components/DropDownButton';
 import store from '../../main/store';
-import browerIpc from '../ipc';
 
-const helpConfig: { key: string; title: string; onClick: () => void }[] = [
+interface Config {
+  key: string;
+  title: string;
+  onClick: () => void;
+}
+
+const helpConfig: Config[] = [
   {
     key: 'open_config',
-    title: '打开数据文件',
+    title: '打开配置',
     onClick: () => {
       store.openInEditor();
     },
   },
   {
     key: 'open_userData',
-    title: '打开配置文件文件夹',
+    title: '打开本地',
     onClick: async () => {
       const userDataPath = await ipcRenderer.invoke('get-userData-path');
       shell.openPath(userDataPath);
-    },
-  },
-  {
-    key: 'ipc_data',
-    title: '查看ipc数据',
-    onClick: () => {
-      browerIpc.send('open-new-browser', 'ipcmessage');
     },
   },
 ];
@@ -65,6 +63,7 @@ const Header = () => {
           buttonText="帮助"
           dataSource={helpConfig}
           onMenuClick={handleHelpClick}
+          showLastClick={false}
         />
       </div>
       <div style={{ display: 'flex' }}>
@@ -72,7 +71,7 @@ const Header = () => {
           type="text"
           shape="circle"
           onClick={() => {
-            browerIpc.send('hide');
+            ipcRenderer.send('hide');
           }}
         >
           <MinusOutlined />
@@ -81,7 +80,7 @@ const Header = () => {
           type="text"
           shape="circle"
           onClick={() => {
-            browerIpc.send('close');
+            ipcRenderer.send('close');
           }}
         >
           <CloseOutlined />

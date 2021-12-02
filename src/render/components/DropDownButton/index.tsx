@@ -8,9 +8,14 @@ interface DropDownMenuProps {
     title: string;
     key: string;
   }[];
+  showLastClick: boolean;
 }
 
-const DropDownMenu = ({ onClick, dataSource }: DropDownMenuProps) => {
+const DropDownMenu: React.FC<DropDownMenuProps> = ({
+  onClick,
+  dataSource,
+  showLastClick = true,
+}) => {
   const [selectedKey, setSelectedKeys] = useState<string>('');
   const handleMenuClick: MenuProps['onClick'] = (params) => {
     setSelectedKeys(params.key);
@@ -20,7 +25,10 @@ const DropDownMenu = ({ onClick, dataSource }: DropDownMenuProps) => {
   };
 
   return (
-    <Menu onClick={handleMenuClick} selectedKeys={[selectedKey]}>
+    <Menu
+      onClick={handleMenuClick}
+      selectedKeys={showLastClick ? [selectedKey] : []}
+    >
       {dataSource.map((item) => {
         return <Menu.Item key={item.key}>{item.title}</Menu.Item>;
       })}
@@ -29,6 +37,7 @@ const DropDownMenu = ({ onClick, dataSource }: DropDownMenuProps) => {
 };
 
 interface DropDownButtonProps {
+  showLastClick?: boolean;
   buttonText: string;
   dataSource: {
     title: string;
@@ -38,11 +47,12 @@ interface DropDownButtonProps {
   onMenuClick: MenuProps['onClick'];
 }
 
-const DropDownButton = ({
+const DropDownButton: React.FC<DropDownButtonProps> = ({
   buttonText,
   dataSource,
   onMenuClick = () => {},
-}: DropDownButtonProps) => {
+  showLastClick = true,
+}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const closeDropdown = () => {
     setVisible(false);
@@ -62,7 +72,11 @@ const DropDownButton = ({
         trigger={['click']}
         visible={visible}
         overlay={
-          <DropDownMenu dataSource={dataSource} onClick={handleMenuClick} />
+          <DropDownMenu
+            dataSource={dataSource}
+            onClick={handleMenuClick}
+            showLastClick={showLastClick}
+          />
         }
       >
         <Button type="text" onClick={openDropdown}>

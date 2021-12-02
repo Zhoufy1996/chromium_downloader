@@ -90,12 +90,9 @@ const AddView: React.FC<AddViewProps> = ({
 
   const paramNames = handleGetParams(state.scriptTemplate);
   const onSave = () => {
-    if (
-      state.presetParams.length === 0 ||
-      state.name === '' ||
-      state.scriptTemplate === ''
-    ) {
+    if (state.name === '' || state.scriptTemplate === '') {
       message.error('请填写完整');
+      return;
     }
 
     onOk({

@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { readdirSync } from 'fs';
 import path from 'path';
 import { createContainer } from 'unstated-next';
+import { ipcRenderer } from 'electron';
 import store from '../../main/store';
 import { getLocalChromiumFolderNames } from '../../common/file';
-import { chromeFoldName } from '../../common/constant';
-import browerIpc from '../ipc';
+import { chromiumFoldName } from '../../common/constant';
+import { Listener } from '../ipc';
 
 const useChromium = () => {
   interface State {
@@ -17,6 +18,7 @@ const useChromium = () => {
     revisionToVersionMap: {
       [revision: string]: string;
     };
+    chromiumSpiderRes: string;
   }
 
   type LocalChromiumItem = State['localChromiumData'][0];
@@ -24,26 +26,27 @@ const useChromium = () => {
   const [state, setState] = useState<State>({
     localChromiumData: [],
     revisionToVersionMap: {},
+    chromiumSpiderRes: '',
   });
 
   // 获取本地chromium数据
   const refreshLocalChromiumData = useCallback(async () => {
-    const userData = await browerIpc.invoke('get-userData-path');
+    const userData = await ipcRenderer.invoke('get-userData-path');
     const getChromiumData = (folderName: string): LocalChromiumItem => {
       const revision = folderName.split('-')[1];
       const folder = readdirSync(
-        path.join(userData, chromeFoldName, folderName)
+        path.join(userData, chromiumFoldName, folderName)
       );
       return {
         revision,
         executablePath: path.join(
           userData,
-          chromeFoldName,
+          chromiumFoldName,
           folderName,
           folder[0],
           'chrome.exe'
         ),
-        folderPath: path.join(userData, chromeFoldName, folderName),
+        folderPath: path.join(userData, chromiumFoldName, folderName),
       };
     };
     const chromiumArr: LocalChromiumItem[] = (
@@ -77,13 +80,29 @@ const useChromium = () => {
     refreshLocalChromiumData();
   }, [refreshRevisionToVersionMap, refreshLocalChromiumData]);
 
-  const { localChromiumData, revisionToVersionMap } = state;
+  useEffect(() => {
+    const listener: Listener = (_, message: string) => {
+      setState((pre) => {
+        return {
+          ...pre,
+          chromiumSpiderRes: message,
+        };
+      });
+    };
+    ipcRenderer.on('chromium-spider-res', listener);
 
+    return () => {
+      ipcRenderer.removeListener('chromium-spider-res', listener);
+    };
+  }, []);
+
+  const { localChromiumData, revisionToVersionMap, chromiumSpiderRes } = state;
   return {
     localChromiumData,
     revisionToVersionMap,
     refreshRevisionToVersionMap,
     refreshLocalChromiumData,
+    chromiumSpiderRes,
   };
 };
 

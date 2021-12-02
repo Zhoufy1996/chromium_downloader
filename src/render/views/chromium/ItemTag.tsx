@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Tag, TagProps, Menu, Dropdown } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
-import { shell } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import { rmdirSync } from 'fs';
 import ChromiumContainer from '../../stores/chromium';
-import browerIpc from '../../ipc';
 
 interface ItemTagProps {
   version: string;
@@ -97,7 +96,7 @@ const ItemTag: React.FC<ItemTagProps> = ({
               isDownloading: true,
             };
           });
-          await browerIpc.invoke('download-chrome', revision);
+          await ipcRenderer.invoke('download-chrome', revision);
           setState((pre) => {
             return {
               ...pre,

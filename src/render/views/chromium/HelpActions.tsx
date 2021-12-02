@@ -1,7 +1,7 @@
 import { Dropdown, Menu, message } from 'antd';
 import React, { useState } from 'react';
 import { rmdirSync } from 'fs';
-import browerIpc from '../../ipc';
+import { ipcRenderer } from 'electron';
 import { killAllChromiumProcess } from '../../utils';
 import ChromiumContainer from '../../stores/chromium';
 
@@ -35,8 +35,10 @@ const HelpActions: React.FC<HelpActionsProps> = ({ style = {} }) => {
   } = ChromiumContainer.useContainer();
 
   const handleKillAllChromiumProcess = async () => {
+    const hide = message.loading('关闭中', 0);
     killAllChromiumProcess(() => {
-      message.success('重置成功');
+      hide();
+      message.success('关闭成功');
     });
   };
 
@@ -47,10 +49,11 @@ const HelpActions: React.FC<HelpActionsProps> = ({ style = {} }) => {
   };
 
   const handleGetSpider = () => {
-    browerIpc.send('start-chromium-spider');
+    ipcRenderer.send('start-chromium-spider');
   };
 
   const clearLocal = async () => {
+    const hide = message.loading('清理中', 0);
     localChromiumData
       .filter((item) => {
         return revisionToVersionMap[item.revision] == null;
@@ -58,6 +61,7 @@ const HelpActions: React.FC<HelpActionsProps> = ({ style = {} }) => {
       .forEach((item) => {
         rmdirSync(item.folderPath, { recursive: true });
       });
+    hide();
     message.success('清理成功');
   };
 
@@ -86,8 +90,8 @@ const HelpActions: React.FC<HelpActionsProps> = ({ style = {} }) => {
         >
           <Menu.Item key="getData">获取数据</Menu.Item>
           <Menu.Item key="refresh">刷新</Menu.Item>
-          <Menu.Item key="clearLocal">清理本地文件</Menu.Item>
-          <Menu.Item key="kill">进程重置</Menu.Item>
+          <Menu.Item key="clearLocal">清理无用文件</Menu.Item>
+          <Menu.Item key="kill">关闭浏览器</Menu.Item>
         </Menu>
       }
     >

@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import childProcess from 'child_process';
 import { ipcRenderer, remote } from 'electron';
 
@@ -70,15 +71,35 @@ interface HandleExecuteScriptProps {
   };
 }
 
+type HandleTransformScriptProps = HandleExecuteScriptProps;
+
+export const handleTransformScript = ({
+  scriptTemplate,
+  params,
+}: HandleTransformScriptProps) => {
+  let scriptCode = scriptTemplate;
+  Object.keys(params).forEach((name) => {
+    scriptCode = scriptCode.replace(
+      RegExp(`{${name}}`, 'g'),
+      params[name] || ''
+    );
+  });
+  return scriptCode;
+};
+
 export const handleExecuteScript = ({
   scriptTemplate,
   params,
 }: HandleExecuteScriptProps) => {
-  let scriptCode = scriptTemplate;
-  Object.keys(params).forEach((name) => {
-    scriptCode = scriptCode.replace(RegExp(`{${name}}`, 'g'), params[name]);
+  const scriptCode = handleTransformScript({
+    scriptTemplate,
+    params,
   });
-  childProcess.exec(scriptCode);
+  childProcess.exec(scriptCode, (err) => {
+    if (err) {
+      message.error(err.message);
+    }
+  });
 };
 
 export const handleGetParams = (scriptTemplate: string) => {
@@ -96,7 +117,5 @@ export const handleGetParams = (scriptTemplate: string) => {
 };
 
 export const isMainWindow = () => {
-  console.log(remote.getCurrentWindow().id);
-  console.log(remote.getGlobal('mainId'));
   return remote.getCurrentWindow().id === remote.getGlobal('mainId');
 };

@@ -24,6 +24,11 @@ export interface Script {
   key: string;
 }
 
+export interface IpData {
+  name: string;
+  ip: string;
+}
+
 export const initialSetting: Setting = {
   prefix: {
     value: 'Win',
@@ -42,15 +47,21 @@ const store = new Store<{
   revisionToVersionMap: RevisionToVersionMap;
   setting: Setting;
   scripts: Script[];
+  ips: IpData[];
 }>({
   defaults: {
     revisions: [],
     revisionToVersionMap: {},
     setting: initialSetting,
     scripts: [],
+    ips: [],
   },
   cwd: app ? app.getPath('userData') : remote.app.getPath('userData'),
-  migrations: {},
+  migrations: {
+    '0.0.5': (s) => {
+      store.set('ips', []);
+    },
+  },
 });
 
 export default store;

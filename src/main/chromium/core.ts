@@ -135,4 +135,37 @@ class ChromiumSpiderCore {
   }
 }
 
+interface DownloadChromiumProps {
+  revision: string;
+  downloadPath: string;
+}
+
+export const downloadChromium = async ({
+  revision,
+  downloadPath,
+}: DownloadChromiumProps) => {
+  let executablePath = '';
+  try {
+    const browserFetcher = ((puppeteer as unknown) as puppeteer.PuppeteerNode).createBrowserFetcher(
+      { path: downloadPath, platform: 'win64' }
+    ) as puppeteer.BrowserFetcher;
+
+    const revisionInfo = await browserFetcher.download(revision);
+    executablePath = revisionInfo.executablePath;
+  } catch (e) {
+    try {
+      const browserFetcher = ((puppeteer as unknown) as puppeteer.PuppeteerNode).createBrowserFetcher(
+        { path: downloadPath, platform: 'win32' }
+      ) as puppeteer.BrowserFetcher;
+
+      const revisionInfo = await browserFetcher.download(revision);
+      executablePath = revisionInfo.executablePath;
+    } catch (err) {
+      throw new Error('找不到对应的下载文件');
+    }
+  }
+
+  return executablePath;
+};
+
 export default ChromiumSpiderCore;

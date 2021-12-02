@@ -1,7 +1,7 @@
 import ChromiumView from '../views/chromium';
-import IpcMessageView from '../views/ipcmessage';
 import ScriptView from '../views/script';
 import SettingView from '../views/setting';
+import Toolkit from '../views/toolkit';
 
 interface MenuConfig {
   key: string;
@@ -30,10 +30,10 @@ const menuConfig: MenuConfig[] = [
     component: SettingView,
   },
   {
-    key: 'ipcmessage',
-    path: '/ipcmessage',
-    title: '设置',
-    component: IpcMessageView,
+    key: 'toolkit',
+    path: '/toolkit',
+    title: '工具包',
+    component: Toolkit,
   },
 ];
 

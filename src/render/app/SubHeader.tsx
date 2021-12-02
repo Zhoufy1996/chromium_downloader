@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import browerIpc from '../ipc';
+import { ipcRenderer } from 'electron';
 
 const SubHeader = () => {
   return (
@@ -18,7 +18,7 @@ const SubHeader = () => {
           type="text"
           shape="circle"
           onClick={() => {
-            browerIpc.send('close');
+            ipcRenderer.send('close');
           }}
         >
           <CloseOutlined />

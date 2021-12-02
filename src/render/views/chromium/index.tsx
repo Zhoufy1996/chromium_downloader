@@ -1,13 +1,11 @@
-import { Input, Switch, SwitchProps, Tag } from 'antd';
-import { SearchProps } from 'antd/lib/input';
 import React, { useEffect, useMemo, useState } from 'react';
+import { Tag } from 'antd';
 import ChromiumContainer from '../../stores/chromium';
-import IpcResContainer from '../../stores/ipcRes';
 import HelpActions from './HelpActions';
 import ItemTag from './ItemTag';
 
 const ChromiumTag = () => {
-  const { chromiumSpiderRes } = IpcResContainer.useContainer();
+  const { chromiumSpiderRes } = ChromiumContainer.useContainer();
   const [visible, setVisible] = useState<boolean>(false);
 
   useEffect(() => {
@@ -29,42 +27,11 @@ const ChromiumTag = () => {
   ) : null;
 };
 
-const { Search } = Input;
-
 const ChromiumView = () => {
-  interface State {
-    text: string;
-    onlyShowDownloaded: boolean;
-    tagVisible: boolean;
-  }
-  const [state, setState] = useState<State>({
-    text: '',
-    onlyShowDownloaded: false,
-    tagVisible: false,
-  });
-
   const {
     localChromiumData,
     revisionToVersionMap,
   } = ChromiumContainer.useContainer();
-
-  const onSearch: SearchProps['onSearch'] = (value) => {
-    setState((pre) => {
-      return {
-        ...pre,
-        text: value,
-      };
-    });
-  };
-
-  const changeSwitch: SwitchProps['onChange'] = (checked) => {
-    setState((pre) => {
-      return {
-        ...pre,
-        onlyShowDownloaded: checked,
-      };
-    });
-  };
 
   const dataSource = useMemo(() => {
     const revisionList = Object.keys(revisionToVersionMap);
@@ -83,10 +50,8 @@ const ChromiumView = () => {
   }, [revisionToVersionMap, localChromiumData]);
 
   const dataSourceShow = useMemo(() => {
-    return dataSource
-      .filter((data) => !state.onlyShowDownloaded || data.isDownloaded)
-      .filter((data) => data.version.includes(state.text));
-  }, [dataSource, state.text, state.onlyShowDownloaded]);
+    return dataSource;
+  }, [dataSource]);
 
   return (
     <div
@@ -98,17 +63,6 @@ const ChromiumView = () => {
       }}
     >
       <div style={{ display: 'flex', marginBottom: 6, alignItems: 'center' }}>
-        <Search
-          style={{ width: 200, marginRight: 12 }}
-          placeholder="..."
-          onSearch={onSearch}
-          enterButton
-        />
-        <Switch
-          style={{ marginRight: 12 }}
-          checked={state.onlyShowDownloaded}
-          onChange={changeSwitch}
-        />
         <HelpActions style={{ marginRight: 12 }} />
         <ChromiumTag />
       </div>

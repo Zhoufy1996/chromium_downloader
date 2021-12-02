@@ -1,0 +1,11 @@
+.hidden-scroll-card {
+  height: 100%;
+  overflow: hidden;
+  .ant-card-body {
+    height: calc(100% - 64px);
+    overflow: hidden;
+    &:hover {
+      overflow-y: auto;
+    }
+  }
+}

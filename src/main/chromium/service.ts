@@ -135,7 +135,7 @@ class ChromiumService {
           (revisions.length - Object.keys(searchedVersions).length)) /
         1000
       ).toFixed(0)}秒`,
-      FINISHED: `爬取完毕：共计${revisions.length}个`,
+      FINISHED: `爬取完毕：共计${revisions.length}个,请刷新。`,
     };
 
     return messageMap[status];

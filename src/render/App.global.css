@@ -7,7 +7,7 @@
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
   height: 12px;
 }
 
@@ -59,6 +59,14 @@ button {
   animation: downloading 2s infinite;
   background-image: linear-gradient(to right, white, #66ccff);
   background-repeat: no-repeat;
+}
+
+.hidden-scroll {
+  overflow: hidden;
+}
+
+.hidden-scroll:hover {
+  overflow: auto;
 }
 
 @keyframes downloading {

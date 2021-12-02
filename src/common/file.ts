@@ -3,7 +3,7 @@ import path from 'path';
 
 import { readdir } from 'fs-extra';
 import { getFileSaveFolder } from '../main/utils';
-import { chromeFoldName } from './constant';
+import { chromiumFoldName } from './constant';
 
 export const createFolder = (
   folderName: string,
@@ -20,7 +20,7 @@ export const copyFile = (src: string, dist: string) => {
 };
 
 export const getLocalChromiumFolderNames = async (userDataPath: string) => {
-  return readdir(path.join(userDataPath, chromeFoldName));
+  return readdir(path.join(userDataPath, chromiumFoldName));
 };
 
 export const getLocalChromiumRevisions = async (userDataPath: string) => {

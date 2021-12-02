@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-export const chromeFoldName = '.chrome';
+export const chromiumFoldName = '.chromium';
 export const configFoldName = '.config';
 
 export const userDataFoldName =
