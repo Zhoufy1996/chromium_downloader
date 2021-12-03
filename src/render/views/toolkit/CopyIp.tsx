@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ip from 'ip';
-import { Button, Table, TableProps } from 'antd';
+import { Button, message, Table, TableProps } from 'antd';
 import store, { IpData } from '../../../main/store';
 import CopyButton from '../../components/CopyButton';
 
@@ -72,9 +72,30 @@ const CopyIp = () => {
   return (
     <div>
       <div>
-        <Button>新增</Button>
+        <Button
+          type="text"
+          size="small"
+          onClick={() => {
+            store.openInEditor();
+          }}
+        >
+          新增
+        </Button>
+        <Button
+          type="text"
+          size="small"
+          style={{
+            marginLeft: 6,
+          }}
+          onClick={() => {
+            handleRefresh();
+            message.success('刷新成功');
+          }}
+        >
+          刷新
+        </Button>
       </div>
-      <div>
+      <div style={{ marginTop: 6 }}>
         <Table pagination={false} dataSource={state.ips} columns={columns} />
       </div>
     </div>

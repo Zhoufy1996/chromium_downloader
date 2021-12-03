@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Dropdown, Menu } from 'antd';
 import CopyIp from './CopyIp';
 import NullComponent from '../../components/NullComponent';
+import SystemProxy from './SystemProxy';
 
 const menuData: {
   key: string;
@@ -12,6 +13,11 @@ const menuData: {
     key: 'ipCopy',
     name: 'ip复制',
     component: CopyIp,
+  },
+  {
+    key: 'systemRead',
+    name: '代理查看',
+    component: SystemProxy,
   },
 ];
 
