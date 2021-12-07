@@ -4,11 +4,11 @@ import { Button, Descriptions, message } from 'antd';
 
 const SystemProxy = () => {
   interface State {
-    proxySettings: ProxySettings;
+    proxySettings: ProxySettings | null;
   }
 
   const [state, setState] = useState<State>({
-    proxySettings: {},
+    proxySettings: null,
   });
 
   const getProxy = useCallback(async () => {
@@ -44,10 +44,10 @@ const SystemProxy = () => {
         }
       >
         <Descriptions.Item label="http">
-          {proxySettings.http?.toString()}
+          {proxySettings?.http?.toString()}
         </Descriptions.Item>
         <Descriptions.Item label="https">
-          {proxySettings.https?.toString()}
+          {proxySettings?.https?.toString()}
         </Descriptions.Item>
       </Descriptions>
     </div>
